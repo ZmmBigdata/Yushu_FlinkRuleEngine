@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+<!--        父工程的坐标-->
+        <artifactId>YushuFlinkRuleEngine</artifactId>
+        <groupId>org.yushu</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+<!--    本工程的坐标-->
+    <artifactId>maven_web_demo</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+<!--去maven 本地库 找带有 lastupdated 的文件
+快速删除  lastupdated 的文件 的脚本  .bat  记事本打开  改本地库的地址  运行.bat脚本   删除所有错误的本地缓存文件
+-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.0</version>
+        </dependency>
+
+        <dependency>
+<!--            不用去声明版本的   子工程引用的父工程的依赖信息-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+        <dependency>
+<!--            去掉版本号，表示子工程这个依赖版本由父工程决定
+具体来说是由父工程的dependencyManagement 决定
+-->
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -2,16 +2,36 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- 模型版本 -->
     <modelVersion>4.0.0</modelVersion>
-
+<!--公司名 组织名 -->
     <groupId>org.yushu</groupId>
+<!--    项目名  模块名-->
     <artifactId>YushuFlinkRuleEngine</artifactId>
+<!--    以什么方式打包  pom 不打包 作为一个父工程 必须是pom -->
+    <packaging>pom</packaging>
+<!--    当前项目版本号 -->
     <version>1.0-SNAPSHOT</version>
 
+
+    <!--     *定义了父工程的grap -->
+
+
+
+<!--    所集成的/管理的子工程   子工程的列表  产生一个反应堆-->
+    <modules>
+<!--        控制构建的顺序 -->
+        <module>maven_web_demo</module>
+        <module>maven_web_demo2</module>
+    </modules>
+
+<!--   版本提取 声明版本 把依赖的版本 统一的提取出来  方便维护的-->
     <properties>
         <java.version>1.8</java.version>
+<!--        标签名是自定义的  一般是两级 上面进行声明  下面进行引用-->
         <flink.version>1.14.5</flink.version>
-        <scala.binary.version>2.11</scala.binary.version>
+<!--        <scala.binary.version>2.11</scala.binary.version>-->
+        <scala.version>2.12.12</scala.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,13 +43,197 @@
         <version>2.6.11</version>
     </parent>
 
+<!--    统一依赖管理 -->
+    <dependencyManagement>
+<!--        在这里面的标签 没有真正被引入到工程中的-->
+<!--        只是做的版本的管理-->
+        <dependencies>
+
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>4.3.0.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>4.3.0.RELEASE</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
     <dependencies>
-        <!-- 在 IDEA 单机调试 Flink，可以导入 flink-runtime-web 依赖包 -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-runtime-web_${scala.binary.version}</artifactId>
+            <artifactId>flink-java</artifactId>
+            <version>${flink.version}</version>
+<!--
+<scope></scope>
+指定依赖的生效范围
+compile ：main 目录  test 目录  打包【默认】
+runtime ： 打包  运行  MySQL
+test ：test 目录   Junit 单元测试
+provided： main 目录  test 目录
+-->
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-java_2.12</artifactId>
             <version>${flink.version}</version>
         </dependency>
+
+        <!-- flinkSql  用 scala 编程需要的依赖 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-scala-bridge_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <!-- flinkSql  用 java 编程需要的依赖 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-table-api-java-bridge_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- flinkSql 解析json数据格式需要的依赖 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-json</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- flinkSql 解析csv数据格式需要的依赖 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-csv</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <!-- flinkSql 整合hive所需-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-sql-connector-hive-3.1.2_2.11</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-clients_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-runtime-web_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
+        <!-- 如果要用scala做开发，则需要添加如下依赖  -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-scala_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-streaming-scala_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <!-- 如果要用scala做开发，则需要添加如下依赖  -->
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-kafka_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
+
+
+        <!-- 打印日志的jar包 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.30</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+
+        <!-- 应用StreamFileSink功能所需要的依赖 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-parquet_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-avro</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.parquet</groupId>
+            <artifactId>parquet-avro</artifactId>
+            <version>1.11.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-files</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+        <!-- 应用StreamFileSink功能所需要的依赖 -->
+
+
+        <!-- 应用jdbcSink功能所需要的依赖 -->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-jdbc_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.27</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-statebackend-rocksdb_2.12</artifactId>
+            <version>${flink.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.roaringbitmap</groupId>
+            <artifactId>RoaringBitmap</artifactId>
+            <version>0.9.28</version>
+        </dependency>
+
+
 
 
 
@@ -40,12 +244,6 @@
         </dependency>
 
 
-        <!-- Flink-Cep -->
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-cep_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -55,6 +253,121 @@
 
 
     </dependencies>
+    <repositories>
+        <repository>
+            <id>nexus-aliyun</id>
+            <name>Nexus aliyun</name>
+            <layout>default</layout>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
 
+    <!-- maven插件下载国内镜像库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>ali-plugin</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>4.3.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <args>
+                                <arg>-dependencyfile</arg>
+                                <arg>${project.build.directory}/.scala_dependencies</arg>
+                            </args>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!--<plugin>
+                <groupId>org.apache.avro</groupId>
+                <artifactId>avro-maven-plugin</artifactId>
+                <version>1.10.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>schema</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/resources/</sourceDirectory>
+                            <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>com.google.code.findbugs:jsr305</exclude>
+                                    <exclude>org.slf4j:*</exclude>
+                                    <exclude>log4j:*</exclude>
+                                </excludes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <!-- Do not copy the signatures in the META-INF folder.
+                                    Otherwise, this might cause SecurityExceptions when using the JAR. -->
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>my.programs.main.clazz</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>
